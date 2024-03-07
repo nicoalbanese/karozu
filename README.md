@@ -24,7 +24,7 @@ const karozu = createKarozu({
 
 export const { createTemplateFile, options } = karozu;
 
-// ---------IMPLEMENTATION---------
+// ---------Usage---------
 
 type TInput = {
   /** The name of the user, always required. */
@@ -43,7 +43,6 @@ template.setTemplate(
     `. You are ${utils.double(age)} years old\n${utils.yell()}`,
 );
 
-// ---------USAGE---------
 template.compileWithTestData();
 /*
 
@@ -64,7 +63,7 @@ This will return:
 
 */
 
-// ---------WATCH---------
+// ---------Watch-Command---------
 // This will watch the template directory for changes and recompile the template file with test data.
 // Requires the templateDir & outputFileName to be set in the createKarozu function.
 watch(options);
