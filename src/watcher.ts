@@ -1,7 +1,7 @@
-import fs from "fs";
+import * as fs from "fs";
 import type { KarozuOptions } from "./index";
-import path from "path";
-import util from "util";
+import * as path from "path";
+import * as util from "util";
 
 // Convert fs functions to versions that return promises.
 // const readFile = util.promisify(fs.readFile);

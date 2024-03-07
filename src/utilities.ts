@@ -1,3 +1,7 @@
+/**
+ * Base utilities
+ *
+ */
 export const baseUtilities = {
   /**
    * Transforms a string to CamelCase

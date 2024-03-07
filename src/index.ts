@@ -1,3 +1,6 @@
+import { watch } from "./watcher";
+import { baseUtilities } from "./utilities";
+
 /**
  * Function type that generates a string from a given set of parameters and utilities.
  *
@@ -151,3 +154,5 @@ export function createKarozu<U extends { [key: string]: any }>(
 ) {
   return new Karozu<U>(options);
 }
+
+export { watch, baseUtilities };
