@@ -8,7 +8,7 @@ A handlebars alternative with end-to-end typesafety.
 import { createKarozu, baseUtilities } from "karozu";
 
 // ---------Creating Custom Utilities---------
-const extraUtilities = {
+const customUtilities = {
   helloify: (name: string) => `Hello, ${name}`,
   double: (num: number) => num * 2,
   yell: () => "YELLING",
@@ -16,7 +16,7 @@ const extraUtilities = {
 
 // ---------SETUP---------
 const karozu = createKarozu({
-  utilities: { ...baseUtilities },
+  utilities: { ...baseUtilities, ...customUtilities },
   templateDir: "src/templates",
   outputFileName: "compiled.md",
 });
