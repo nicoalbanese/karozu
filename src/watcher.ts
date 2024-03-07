@@ -17,6 +17,8 @@ const updateConsole = (templateDir: string) => {
 };
 
 export function watch(options: KarozuOptions<any>) {
+  if (options.templateDir === undefined) throw Error("templateDir is required");
+
   updateConsole(options.templateDir);
   const templatesDir = path.join(process.cwd(), options.templateDir);
   fs.watch(templatesDir, { recursive: true }, async (_, filename) => {
@@ -56,6 +58,9 @@ export function watch(options: KarozuOptions<any>) {
       const compiledText = templateFile.compileTestTemplate();
 
       // Write output text
+      if (options.outputFileName === undefined)
+        throw Error("outputFileName is required");
+
       const outputPath = filePath.replace(
         "template.ts",
         options.outputFileName,

@@ -103,14 +103,14 @@ export interface KarozuOptions<U> {
    * @example
    * templateDir: "src/templates"
    */
-  templateDir: string;
+  templateDir?: string;
   /**
    * String that will be compiled file name.
    *
    * @example
    * outputFileName: "compiled.md"
    */
-  outputFileName: string;
+  outputFileName?: string;
 }
 
 /**

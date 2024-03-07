@@ -4,7 +4,7 @@ A handlebars alternative with end-to-end typesafety.
 
 ## How to use
 
-```typescript
+````typescript
 import { createKarozu, baseUtilities } from "karozu";
 
 // ---------Creating Custom Utilities---------
@@ -17,8 +17,8 @@ const customUtilities = {
 // ---------SETUP---------
 const karozu = createKarozu({
   utilities: { ...baseUtilities, ...customUtilities },
-  templateDir: "src/templates",
-  outputFileName: "compiled.md",
+  templateDir: "src/templates", // optional value
+  outputFileName: "compiled.md", // optional value
 });
 
 export const { createTemplateFile, options } = karozu;
@@ -44,7 +44,7 @@ template.setTemplate(
 
 // ---------USAGE---------
 template.compileWithTestData();
-/* 
+/*
 
 This will return:
 
@@ -62,4 +62,12 @@ This will return:
   YELLING
 
 */
+
+// ---------WATCH---------
+// This will watch the template directory for changes and recompile the template file with test data.
+// Requires the templateDir & outputFileName to be set in the createKarozu function.
+watch(options);
+
 ```
+````
+
