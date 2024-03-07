@@ -1,6 +1,7 @@
 # Karozu
 
 A handlebars alternative with end-to-end typesafety.
+Karozu means `schematic` in Japanese 😊
 
 ## How to use
 
@@ -70,4 +71,3 @@ watch(options);
 
 ```
 ````
-
