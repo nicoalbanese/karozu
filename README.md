@@ -1,12 +1,13 @@
 # Karozu
 
-A type-safe declarative approach to create dynamic code snippets (MEH).
+A type-safe declarative approach to dynamic code generation.
+
 Karozu means `schematic` in Japanese 😊
 
 ## How to use
 
 1. Define an Extension with the props and dependencies you need. You can also pass utility functions to use in your templates. This is helpful for string manipulation, date formatting, etc.
-````typescript file="extension/config.ts"
+```typescript file="extension/config.ts"
 import { z } from "zod";
 import { Extension } from "karozu";
 import { baseUtilities } from "karozu/utils";
@@ -92,7 +93,6 @@ export const drizzle = new Extension({
 
 2. Define your templates. You can use the props and utilities you defined in the extension with full type-safety.
 ```typescript file="extension/templates.ts"
-// ---------Usage---------
 import { Template } from "karozu";
 import { drizzle } from "./config";
 
