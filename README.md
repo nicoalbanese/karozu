@@ -1,72 +1,155 @@
 # Karozu
 
-A handlebars alternative with end-to-end typesafety.
+A type-safe declarative approach to create dynamic code snippets (MEH).
 Karozu means `schematic` in Japanese 😊
 
 ## How to use
 
-````typescript
-import { createKarozu, baseUtilities } from "karozu";
+1. Define an Extension with the props and dependencies you need. You can also pass utility functions to use in your templates. This is helpful for string manipulation, date formatting, etc.
+```typescript file="extension/config.ts"
+import { z } from "zod";
+import { Extension } from "karozu";
+import { baseUtilities } from "karozu/utils";
 
-// ---------Creating Custom Utilities---------
-const customUtilities = {
-  helloify: (name: string) => `Hello, ${name}`,
-  double: (num: number) => num * 2,
-  yell: () => "YELLING",
-};
-
-// ---------SETUP---------
-const karozu = createKarozu({
-  utilities: { ...baseUtilities, ...customUtilities },
-  templateDir: "src/templates", // optional value
-  outputFileName: "compiled.md", // optional value
+// ---------Define Props---------
+export const propSchema = z.object({
+  dbType: z.enum(["postgres", "mysql", "sqlite"]),
+  provider: z.enum(["neon", "turso", "planetscale"]),
 });
 
-export const { createTemplateFile, options } = karozu;
-
-// ---------Usage---------
-
-type TInput = {
-  /** The name of the user, always required. */
-  name: string;
-  /** The age of the user, always required. */
-  age: number;
-};
-
-const template = createTemplateFile<TInput>();
-
-template.setTestData({ age: 20, name: "John" });
-
-template.setTemplate(
-  ({ name, age }, utils) =>
-    utils.helloify(name) +
-    `. You are ${utils.double(age)} years old\n${utils.yell()}`,
-);
-
-template.compileWithTestData();
-/*
-
-This will return:
-
-  Hello, John. You are 40 years old
-  YELLING
-
-*/
-
-template.compileTemplate({ name: "Jane", age: 30 });
-/*
-
-This will return:
-
-  Hello, Jane. You are 60 years old
-  YELLING
-
-*/
-
-// ---------Watch-Command---------
-// This will watch the template directory for changes and recompile the template file with test data.
-// Requires the templateDir & outputFileName to be set in the createKarozu function.
-watch(options);
-
+// ---------Create Extension---------
+export const drizzle = new Extension({
+  name: "drizzle-orm",
+  version: "1.0.0",
+  description: "Drizzle ORM for Next.js",
+  author: "@nicoalbanese10",
+  props: propSchema,
+  postInstallScripts: (props) => [],
+  dependencies: (props) => ({
+    default: [
+      {
+        packageName: "drizzle-orm",
+        version: "^2.0.0",
+      },
+      {
+        packageName: "drizzle-kit",
+        version: "^2.0.0",
+        dev: true,
+      },
+    ],
+    dbType: {
+      postgres: [
+        {
+          packageName: "pg",
+          version: "^8.7.1",
+        },
+      ],
+      mysql: [
+        {
+          packageName: "mysql2",
+          version: "^3.6.0",
+        },
+      ],
+      sqlite: [
+        {
+          packageName: "@libsql/client",
+          version: "^0.5.0",
+        },
+        {
+          packageName: "better-sqlite3",
+          version: "^9.0.0",
+        },
+      ],
+    },
+    provider: {
+      neon: [
+        {
+          packageName: "@neondatabase/serverless",
+          version: "^0.7.0",
+        },
+      ],
+      planetscale: [
+        {
+          packageName: "planetscale",
+          version: "latest",
+        },
+      ],
+      turso: [
+        {
+          packageName: "@turso/client",
+          version: "^0.1.0",
+        },
+      ],
+    },
+  }),
+  utilities: {
+    ...baseUtilities,
+    capitalize: (str: string) => str.charAt(0).toUpperCase() + str.slice(1),
+    formatDate: (date: Date) => date.toISOString(),
+  },
+});
 ```
-````
+
+2. Define your templates. You can use the props and utilities you defined in the extension with full type-safety.
+```typescript file="extension/templates.ts"
+// ---------Usage---------
+import { Template } from "karozu";
+import { drizzle } from "./config";
+
+export const drizzleConfig = new Template(drizzle, ({ props, utilities }) => ({
+  title: `${utilities.toKebabCase("DrizzleConfig")}`,
+  description: "This is the config for Drizzle",
+  path: "drizzle.config.ts",
+  template: `import { defineConfig } from "drizzle-kit";
+
+export default defineConfig({
+  dialect: "${utilities.capitalize(props.dbType)}",
+  provider: "${props.provider}",
+  schema: "./src/schema.ts",
+  out: "./drizzle",
+});
+  `,
+}));
+
+// More templates...
+```
+
+3. Finally, compile your extension with the templates and props:
+```typescript file="extension/index.ts"
+import { drizzle } from "./config";
+import { templates } from "./templates";
+
+const compiled = drizzle.compile(templates, {
+  dbType: "mysql",
+  provider: "planetscale",
+});
+
+console.log(compiled);
+/*
+
+This will return:
+
+{
+  dependencies: [ 'drizzle-orm', 'mysql2', 'planetscale' ],
+  devDependencies: [ 'drizzle-kit' ],
+  templates: [
+    {
+      title: 'drizzle-config',
+      description: 'This is the config for Drizzle',
+      path: 'drizzle.config.ts',
+      template: 'import { defineConfig } from "drizzle-kit";\n' +
+        '\n' +
+        'export default defineConfig({\n' +
+        '  dialect: "Mysql",\n' +
+        '  provider: "planetscale",\n' +
+        '  schema: "./src/schema.ts",\n' +
+        '  out: "./drizzle",\n' +
+        '});\n' +
+        '  '
+    },
+    // More templates...
+  ]
+}
+
+*/
+```
