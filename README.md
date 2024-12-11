@@ -1,6 +1,7 @@
 # Karozu
 
-A type-safe declarative approach to create dynamic code snippets (MEH).
+A type-safe declarative approach to dynamic code generation.
+
 Karozu means `schematic` in Japanese 😊
 
 ## How to use
