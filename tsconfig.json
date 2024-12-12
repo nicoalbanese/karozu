@@ -13,5 +13,6 @@
       "karozu/utils": ["src/utils"]
     } /* Specify a set of entries that re-map imports to additional lookup locations. */
   },
-  "exclude": ["node_modules", "dist"]
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules", "dist", "examples"]
 }
