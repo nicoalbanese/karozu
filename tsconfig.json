@@ -1,12 +1,17 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "ES2017",
     "module": "commonjs",
     "lib": ["es2017", "es7", "es6", "dom"],
     "declaration": true,
     "outDir": "dist",
     "strict": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "baseUrl": "./" /* Specify the base directory to resolve non-relative module names. */,
+    "paths": {
+      "karozu": ["src"],
+      "karozu/utils": ["src/utils"]
+    } /* Specify a set of entries that re-map imports to additional lookup locations. */
   },
   "exclude": ["node_modules", "dist"]
 }

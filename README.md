@@ -93,7 +93,6 @@ export const drizzle = new Extension({
 
 2. Define your templates. You can use the props and utilities you defined in the extension with full type-safety.
 ```typescript file="extension/templates.ts"
-// ---------Usage---------
 import { Template } from "karozu";
 import { drizzle } from "./config";
 
