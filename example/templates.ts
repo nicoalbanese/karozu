@@ -1,10 +1,12 @@
 import { Template } from "karozu";
 import { drizzle } from "./config";
 
+// 1. Create File Example
 export const drizzleConfig = new Template(drizzle, ({ props, utilities }) => ({
   title: `${utilities.toKebabCase("DrizzleConfig")}`,
   description: "This is the config for Drizzle",
   path: "drizzle.config.ts",
+  // The operation is implicitly "create" when template is provided
   template: `import { defineConfig } from "drizzle-kit";
 
 export default defineConfig({
@@ -49,8 +51,61 @@ const db = drizzle({ client });`,
     title: "DB Instance",
     description: "This is the db instance for Drizzle",
     path: "lib/db/schema.ts",
+    // Explicitly set operation to "create"
+    operation: "create",
     template: templates[props.provider],
   };
 });
 
-export const templates = [drizzleConfig, dbInstance];
+// 2. Edit File Example
+export const updateConfigFile = new Template(drizzle, ({ props, utilities }) => ({
+  title: "Update Config File",
+  description: "Updates environment variables in existing config file",
+  path: ".env.example",
+  operation: "edit",
+  replacements: [
+    {
+      oldString: "DATABASE_URL=",
+      newString: `DATABASE_URL=${props.provider === "neon" ? "postgresql://" : "sqlite://"}`,
+    },
+    {
+      oldString: "# DB Config",
+      newString: `# ${utilities.capitalize(props.dbType)} Database Configuration`,
+    }
+  ],
+}));
+
+// 3. Append File Example
+export const appendReadme = new Template(drizzle, ({ props, utilities }) => ({
+  title: "Update README",
+  description: "Add database setup instructions to README",
+  path: "README.md",
+  operation: "append",
+  content: `
+## Database Setup (${utilities.capitalize(props.dbType)} with ${utilities.capitalize(props.provider)})
+
+This project uses ${utilities.capitalize(props.dbType)} with ${utilities.capitalize(props.provider)} as the database provider.
+To set up your database:
+
+1. Configure your environment variables in .env
+2. Run migration: \`npm run db:migrate\`
+
+For more information, refer to the documentation.
+`,
+}));
+
+// 4. Delete File Example
+export const removeOldConfig = new Template(drizzle, () => ({
+  title: "Delete Old Config",
+  description: "Removes the old database configuration file",
+  path: "old-db-config.ts",
+  operation: "delete",
+}));
+
+export const templates = [
+  drizzleConfig, 
+  dbInstance, 
+  updateConfigFile, 
+  appendReadme,
+  removeOldConfig
+];

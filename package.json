@@ -1,9 +1,20 @@
 {
   "name": "karozu",
-  "version": "0.0.3",
+  "version": "0.0.5",
   "description": "Handlebars alternative with end-to-end typesafety",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "exports": {
+    ".": "./dist/index.js",
+    "./utils": "./dist/utils/index.js"
+  },
+  "typesVersions": {
+    "*": {
+      "utils": [
+        "./dist/utils/index.d.ts"
+      ]
+    }
+  },
   "files": [
     "./dist/**/*"
   ],
