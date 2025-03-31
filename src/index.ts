@@ -1,4 +1,4 @@
 import { Extension } from "./extension";
-import { Template } from "./template";
+import { Template, FileOperation, Replacement } from "./template";
 
-export { Extension, Template };
+export { Extension, Template, FileOperation, Replacement };

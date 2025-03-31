@@ -2,6 +2,25 @@ import { z } from "zod";
 import { Extension } from "./extension";
 
 /**
+ * Type of operation to perform on a file
+ */
+export type FileOperation = 
+  | "create"   // Create a new file
+  | "edit"     // Edit an existing file with string replacements
+  | "append"   // Append content to an existing file
+  | "delete";  // Delete a file
+
+/**
+ * Represents a string replacement operation for editing files
+ */
+export type Replacement = {
+  /** Text to find in the file */
+  oldString: string;
+  /** Text to replace it with */
+  newString: string;
+};
+
+/**
  * Configuration for a template, including metadata and content
  */
 type TemplateConfig<E extends Extension<any, any>> = {
@@ -11,9 +30,32 @@ type TemplateConfig<E extends Extension<any, any>> = {
   description: string;
   /** **Absolute file path** where template will be generated (from root directory) */
   path: string;
-  /** Template content string */
-  template: string;
-};
+  /** Operation to perform on the file */
+  operation?: FileOperation;
+} & (
+  | {
+      /** Operation is create (default) or not specified */
+      operation?: "create";
+      /** Template content string */
+      template: string;
+    }
+  | {
+      /** Operation is edit */
+      operation: "edit";
+      /** Array of replacements to perform */
+      replacements: Replacement[];
+    }
+  | {
+      /** Operation is append */
+      operation: "append";
+      /** Content to append to the file */
+      content: string;
+    }
+  | {
+      /** Operation is delete */
+      operation: "delete";
+    }
+);
 
 /**
  * Template object with configuration and extension
@@ -60,6 +102,13 @@ export class Template<E extends Extension<any, any>> {
       props,
       utilities: this.extension.utilities,
     });
+
+    // Set default operation to "create" if not specified
+    if (!config.operation) {
+      if ("template" in config) {
+        (config as any).operation = "create";
+      }
+    }
 
     return {
       ...config,
