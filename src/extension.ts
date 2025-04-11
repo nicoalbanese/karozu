@@ -16,14 +16,14 @@ type DependencyConfig<T extends z.ZodObject<any>> = {
 };
 
 type UtilityFunction = (...args: any) => any;
-type InstallScript = {
+export type InstallScript = {
   name?: string;
   description?: string;
   /** should not include the package manager, should be everything after the package manager ie `install` instead of `pnpm install` */
   script: string;
 };
 
-type PackageJSONCommand = {
+export type PackageJSONCommand = {
   description?: string;
   /** should be the command to run, examples: `node dist/index.js`, `next dev`, `eslint .` */
   command: string;
