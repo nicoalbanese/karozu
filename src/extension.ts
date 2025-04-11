@@ -27,6 +27,8 @@ type PackageJSONCommand = {
   description?: string;
   /** should be the command to run, examples: `node dist/index.js`, `next dev`, `eslint .` */
   command: string;
+  /** name of the command, used as the key in package.json scripts (e.g. "dev", "start", "lint") */
+  name: string;
 };
 
 type ExtensionConfig<

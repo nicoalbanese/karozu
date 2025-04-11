@@ -13,7 +13,7 @@ export const drizzle = new Extension({
   description: "Drizzle ORM for Next.js",
   author: "@nicoalbanese10",
   props: propSchema,
-  commands: () => [{ command: "drizzle-kit migrate" }],
+  commands: () => [{ command: "drizzle-kit migrate", name: "migrate" }],
   postInstallScripts: (props) => [],
   dependencies: (props) => ({
     default: [
