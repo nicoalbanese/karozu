@@ -21,7 +21,13 @@ type InstallScript = {
   description?: string;
   /** should not include the package manager, should be everything after the package manager ie `install` instead of `pnpm install` */
   script: string;
-}
+};
+
+type PackageJSONCommand = {
+  description?: string;
+  /** should be the command to run, examples: `node dist/index.js`, `next dev`, `eslint .` */
+  command: string;
+};
 
 type ExtensionConfig<
   T extends z.ZodObject<any>,
@@ -35,6 +41,7 @@ type ExtensionConfig<
   dependencies: (props: z.infer<T>) => DependencyConfig<T>;
   utilities?: U;
   postInstallScripts?: (props: z.infer<T>) => InstallScript[];
+  commands?: (props: z.infer<T>) => PackageJSONCommand[];
 };
 
 export class Extension<
@@ -99,10 +106,17 @@ export class Extension<
       compiledTemplates.push(compiled);
     });
 
+    const postInstallScripts = this.config.postInstallScripts
+      ? this.config.postInstallScripts(values)
+      : [];
+    const commands = this.config.commands ? this.config.commands(values) : [];
+
     return {
       dependencies: deps,
       devDependencies: devDeps,
       templates: compiledTemplates,
+      postInstallScripts,
+      commands,
     };
   }
 }
